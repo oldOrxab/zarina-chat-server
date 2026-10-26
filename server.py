@@ -4,6 +4,8 @@ from collections import defaultdict
 from threading import Lock
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 app = FastAPI(title="Zarina Chat Server")
 _lock = Lock()
@@ -70,7 +72,7 @@ def send(body: SendBody):
         if peer not in _users:
             raise HTTPException(status_code=404, detail="Qarşı tərəfin kodu tapılmadı. O, əvvəlcə Zarina çatını açmalıdır.")
         _counter += 1
-        stamp = time.strftime("%H:%M")
+        stamp = datetime.now(ZoneInfo("Asia/Baku")).strftime("%H:%M")
         msg = {"id": str(_counter), "from_code": body.code, "to_code": peer, "text": text, "time": stamp}
         _messages[peer].append(msg)
         _messages[body.code].append(msg)
